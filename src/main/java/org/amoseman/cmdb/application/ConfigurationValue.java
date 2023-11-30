@@ -2,10 +2,10 @@ package org.amoseman.cmdb.application;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class Response {
+public class ConfigurationValue {
     private final String content;
 
-    public Response(String content) {
+    public ConfigurationValue(String content) {
         this.content = content;
     }
 

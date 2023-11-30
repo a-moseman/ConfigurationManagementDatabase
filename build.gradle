@@ -12,7 +12,7 @@ repositories {
 }
 
 application {
-    mainClass = 'org.amoseman.cmdb.ApplicationStart'
+    mainClass = 'org.amoseman.cmdb.Main'
 }
 
 jar {

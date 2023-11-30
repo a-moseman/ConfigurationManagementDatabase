@@ -6,8 +6,6 @@ import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Optional;
 
 public class RedisDatabaseClient implements DatabaseClient {

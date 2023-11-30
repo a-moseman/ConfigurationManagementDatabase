@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.core.Configuration;
 import jakarta.validation.constraints.NotEmpty;
 
-public class ApplcationConfig extends Configuration {
+public class ConfigurationManagementDatabaseConfiguration extends Configuration {
     @NotEmpty
     private String defaultValue = "NULL";
 

@@ -8,20 +8,20 @@ import org.amoseman.cmdb.databaseclient.DatabaseClient;
 
 @Path("/cmdb")
 @Produces(MediaType.APPLICATION_JSON)
-public class ApplicationResource {
+public class ConfigurationResource {
     private final DatabaseClient databaseClient;
     private final String defaultValue;
 
-    public ApplicationResource(DatabaseClient databaseClient, String defaultValue) {
+    public ConfigurationResource(DatabaseClient databaseClient, String defaultValue) {
         this.databaseClient = databaseClient;
         this.defaultValue = defaultValue;
     }
 
     @GET
     @Timed
-    public Response read(@QueryParam("collection") @NotEmpty String collection, @QueryParam("label") @NotEmpty String label) {
+    public ConfigurationValue read(@QueryParam("collection") @NotEmpty String collection, @QueryParam("label") @NotEmpty String label) {
         String value = databaseClient.read(collection, label).orElse(defaultValue);
-        return new Response(value);
+        return new ConfigurationValue(value);
     }
 
     @POST
