@@ -19,14 +19,14 @@ public class ConfigurationResource {
 
     @GET
     @Timed
-    public ConfigurationValue read(@QueryParam("collection") @NotEmpty String collection, @QueryParam("label") @NotEmpty String label) {
-        String value = databaseClient.read(collection, label).orElse(defaultValue);
+    public ConfigurationValue read(@QueryParam("account") @NotEmpty String account, @QueryParam("label") @NotEmpty String label) {
+        String value = databaseClient.read(account, label).orElse(defaultValue);
         return new ConfigurationValue(value);
     }
 
     @POST
     @Timed
-    public void write(@QueryParam("collection") @NotEmpty String collection, @QueryParam("label") @NotEmpty String label, @QueryParam("value") @NotEmpty String value) {
-        databaseClient.write(collection, label, value);
+    public void write(@QueryParam("account") @NotEmpty String account, @QueryParam("label") @NotEmpty String label, @QueryParam("value") @NotEmpty String value) {
+        databaseClient.write(account, label, value);
     }
 }

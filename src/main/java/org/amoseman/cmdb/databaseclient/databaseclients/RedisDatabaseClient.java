@@ -18,8 +18,8 @@ public class RedisDatabaseClient implements DatabaseClient {
     }
 
     @Override
-    public Optional<String> read(String collection, String label) {
-        RMap<String, String> map = redis.getMap(collection);
+    public Optional<String> read(String account, String label) {
+        RMap<String, String> map = redis.getMap(account);
         if (map.containsKey(label)) {
             return Optional.of(map.get(label));
         }
@@ -27,8 +27,8 @@ public class RedisDatabaseClient implements DatabaseClient {
     }
 
     @Override
-    public void write(String collection, String label, String value) {
-        RMap<String, String> map = redis.getMap(collection);
+    public void write(String account, String label, String value) {
+        RMap<String, String> map = redis.getMap(account);
         map.put(label, value);
     }
 }
