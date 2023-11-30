@@ -1,6 +1,7 @@
 package org.amoseman.cmdb.application;
 
 import com.codahale.metrics.annotation.Timed;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.amoseman.cmdb.databaseclient.DatabaseClient;
@@ -18,14 +19,14 @@ public class ApplicationResource {
 
     @GET
     @Timed
-    public Response read(@QueryParam("collection") String collection, @QueryParam("label") String label) {
+    public Response read(@QueryParam("collection") @NotEmpty String collection, @QueryParam("label") @NotEmpty String label) {
         String value = databaseClient.read(collection, label).orElse(defaultValue);
         return new Response(value);
     }
 
-    @PUT
+    @POST
     @Timed
-    public void write(@QueryParam("collection") String collection, @QueryParam("label") String label, @QueryParam("value") String value) {
+    public void write(@QueryParam("collection") @NotEmpty String collection, @QueryParam("label") @NotEmpty String label, @QueryParam("value") @NotEmpty String value) {
         databaseClient.write(collection, label, value);
     }
 }
