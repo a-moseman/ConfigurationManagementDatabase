@@ -4,7 +4,7 @@ import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
 import org.amoseman.cmdb.application.ConfigurationManagementDatabaseConfiguration;
-import org.amoseman.cmdb.application.ConfigurationResource;
+import org.amoseman.cmdb.application.resources.ConfigurationResource;
 import org.amoseman.cmdb.databaseclient.DatabaseClient;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
 

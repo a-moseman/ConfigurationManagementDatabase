@@ -1,9 +1,10 @@
-package org.amoseman.cmdb.application;
+package org.amoseman.cmdb.application.resources;
 
 import com.codahale.metrics.annotation.Timed;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import org.amoseman.cmdb.application.ConfigurationValue;
 import org.amoseman.cmdb.databaseclient.DatabaseClient;
 
 @Path("/cmdb")
