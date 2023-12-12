@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'org.amoseman'
-version = '1.0.0'
+version = '2.0.0'
 
 repositories {
     mavenCentral()
@@ -27,6 +27,7 @@ dependencies {
 
     implementation 'org.redisson:redisson:3.24.3'
     implementation 'io.dropwizard:dropwizard-core:4.0.4'
+    implementation 'io.dropwizard:dropwizard-auth:4.0.4'
 }
 
 test {

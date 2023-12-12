@@ -1,4 +1,4 @@
-package org.amoseman.cmdb.application;
+package org.amoseman.cmdb.application.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

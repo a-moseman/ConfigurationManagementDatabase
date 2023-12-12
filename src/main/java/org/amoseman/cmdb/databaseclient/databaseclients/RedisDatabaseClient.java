@@ -31,4 +31,10 @@ public class RedisDatabaseClient implements DatabaseClient {
         RMap<String, String> map = redis.getMap(account);
         map.put(label, value);
     }
+
+    @Override
+    public void delete(String account, String label) {
+        RMap<String, String> map = redis.getMap(account);
+        map.remove(label);
+    }
 }

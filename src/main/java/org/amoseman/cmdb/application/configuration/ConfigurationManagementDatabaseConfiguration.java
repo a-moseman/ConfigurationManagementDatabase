@@ -1,8 +1,11 @@
-package org.amoseman.cmdb.application;
+package org.amoseman.cmdb.application.configuration;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.core.Configuration;
 import jakarta.validation.constraints.NotEmpty;
+
+import java.util.Map;
+import java.util.Set;
 
 public class ConfigurationManagementDatabaseConfiguration extends Configuration {
     @NotEmpty
@@ -10,6 +13,11 @@ public class ConfigurationManagementDatabaseConfiguration extends Configuration 
 
     @NotEmpty
     private String databaseAddress;
+
+    @NotEmpty
+    private String accountFilePath;
+
+
 
 
     @JsonProperty
@@ -30,5 +38,15 @@ public class ConfigurationManagementDatabaseConfiguration extends Configuration 
     @JsonProperty
     public void setDatabaseAddress(String databaseAddress) {
         this.databaseAddress = databaseAddress;
+    }
+
+    @JsonProperty
+    public String getAccountFilePath() {
+        return accountFilePath;
+    }
+
+    @JsonProperty
+    public void setAccountFilePath(String accountFilePath) {
+        this.accountFilePath = accountFilePath;
     }
 }
