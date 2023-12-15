@@ -12,8 +12,8 @@ import org.amoseman.cmdb.application.authentication.UserAuthenticator;
 import org.amoseman.cmdb.application.configuration.ConfigurationManagementDatabaseConfiguration;
 import org.amoseman.cmdb.application.resources.ConfigurationResource;
 import org.amoseman.cmdb.databaseclient.DatabaseClient;
+import org.amoseman.cmdb.databaseclient.databaseclients.MongoDatabaseClient;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
-
 import java.util.Map;
 
 public class CMDBApplication extends Application<ConfigurationManagementDatabaseConfiguration>  {
@@ -29,7 +29,12 @@ public class CMDBApplication extends Application<ConfigurationManagementDatabase
 
     @Override
     public void run(ConfigurationManagementDatabaseConfiguration configuration, Environment environment) {
-        DatabaseClient client = new RedisDatabaseClient(configuration.getDatabaseAddress());
+        String databaseType = configuration.getDatabaseType();
+        DatabaseClient client = switch (databaseType) {
+            case "REDIS" -> new RedisDatabaseClient(configuration.getDatabaseAddress());
+            case "MONGO" -> new MongoDatabaseClient(configuration.getDatabaseAddress());
+            default -> throw new RuntimeException("Invalid database type");
+        };
         ConfigurationResource resource = new ConfigurationResource(client, configuration.getDefaultValue());
         environment.jersey().register(resource);
 

@@ -12,8 +12,9 @@ public class RedisDatabaseClient implements DatabaseClient {
     private final RedissonClient redis;
 
     public RedisDatabaseClient(String address) {
+        String connectionString = String.format("redis://%s", address);
         Config config = new Config();
-        config.useSingleServer().setAddress(address);
+        config.useSingleServer().setAddress(connectionString);
         this.redis = Redisson.create(config);
     }
 

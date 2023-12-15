@@ -17,6 +17,9 @@ public class ConfigurationManagementDatabaseConfiguration extends Configuration 
     @NotEmpty
     private String accountFilePath;
 
+    @NotEmpty
+    private String databaseType;
+
 
 
 
@@ -48,5 +51,15 @@ public class ConfigurationManagementDatabaseConfiguration extends Configuration 
     @JsonProperty
     public void setAccountFilePath(String accountFilePath) {
         this.accountFilePath = accountFilePath;
+    }
+
+    @JsonProperty
+    public String getDatabaseType() {
+        return databaseType;
+    }
+
+    @JsonProperty
+    public void setDatabaseType(String databaseType) {
+        this.databaseType = databaseType;
     }
 }
