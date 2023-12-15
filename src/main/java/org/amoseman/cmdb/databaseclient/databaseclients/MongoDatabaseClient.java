@@ -1,5 +1,6 @@
 package org.amoseman.cmdb.databaseclient.databaseclients;
 
+import com.mongodb.BasicDBObject;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.*;
@@ -46,7 +47,7 @@ public class MongoDatabaseClient implements DatabaseClient {
     }
 
     @Override
-    public void write(String account, String label, String value) {
+    public void create(String account, String label, String value) {
         Optional<MongoCollection<Document>> maybe = getCollection(account);
         MongoCollection<Document> collection;
         if (maybe.isEmpty()) {
@@ -57,18 +58,22 @@ public class MongoDatabaseClient implements DatabaseClient {
             collection = maybe.get();
         }
         Document existing = collection.find(eq("label", label)).first();
-        if (existing == null) {
-            Document document = new Document();
-            document.append("label", label);
-            document.append("value", value);
-            collection.insertOne(document);
+        if (existing != null) {
+            return;
         }
-        else {
-            Document update = new Document();
-            update.append("$label", label);
-            update.append("$value", value);
-            collection.updateOne(existing, update);
-        }
+        Document document = new Document();
+        document.append("label", label);
+        document.append("value", value);
+        collection.insertOne(document);
+    }
+
+    @Override
+    public void update(String account, String label, String value) {
+        BasicDBObject search = new BasicDBObject().append("label", label);
+        BasicDBObject update = new BasicDBObject().append("$set",
+                new BasicDBObject("value", value)
+                );
+        database.getCollection(account).updateOne(search, update);
     }
 
     @Override

@@ -3,7 +3,6 @@ package org.amoseman.cmdb.application.resources;
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
 import jakarta.annotation.security.PermitAll;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -33,8 +32,15 @@ public class ConfigurationResource {
     @POST
     @PermitAll
     @Timed
-    public void write(@Auth User user, @QueryParam("label") @NotEmpty String label, @QueryParam("value") @NotEmpty String value) {
-        databaseClient.write(user.getName(), label, value);
+    public void create(@Auth User user, @QueryParam("label") @NotEmpty String label, @QueryParam("value") @NotEmpty String value) {
+        databaseClient.create(user.getName(), label, value);
+    }
+
+    @PUT
+    @PermitAll
+    @Timed
+    public void update(@Auth User user, @QueryParam("label") @NotEmpty String label, @QueryParam("value") @NotEmpty String value) {
+        databaseClient.update(user.getName(), label, value);
     }
 
     @DELETE

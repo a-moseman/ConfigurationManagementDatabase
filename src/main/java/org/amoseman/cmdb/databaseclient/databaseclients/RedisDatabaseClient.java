@@ -28,14 +28,29 @@ public class RedisDatabaseClient implements DatabaseClient {
     }
 
     @Override
-    public void write(String account, String label, String value) {
+    public void create(String account, String label, String value) {
         RMap<String, String> map = redis.getMap(account);
+        if (map.containsKey((label))) {
+            return;
+        }
+        map.put(label, value);
+    }
+
+    @Override
+    public void update(String account, String label, String value) {
+        RMap<String, String> map = redis.getMap(account);
+        if (!map.containsKey((label))) {
+            return;
+        }
         map.put(label, value);
     }
 
     @Override
     public void delete(String account, String label) {
         RMap<String, String> map = redis.getMap(account);
+        if (!map.containsKey(label)) {
+            return;
+        }
         map.remove(label);
     }
 }
