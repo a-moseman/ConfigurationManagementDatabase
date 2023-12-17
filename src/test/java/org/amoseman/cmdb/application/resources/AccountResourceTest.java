@@ -4,11 +4,11 @@ import org.amoseman.cmdb.dao.accountdaos.MongoAccountDatabaseAccess;
 import org.amoseman.cmdb.dao.accountdaos.RedisAccountDatabaseAccess;
 import org.amoseman.cmdb.databaseclient.databaseclients.MongoDatabaseClient;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
+
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 class AccountResourceTest {
     private MongoDatabaseClient mongoDatabaseClient;
@@ -33,6 +33,7 @@ class AccountResourceTest {
     }
 
     @Test
+    @Order(0)
     void addAccount() {
         mongoAccountDatabaseAccess.addAccount("test-account", "test-password");
         assertEquals(true, mongoAccountDatabaseAccess.validate("test-account", "test-password"));
@@ -46,12 +47,11 @@ class AccountResourceTest {
     }
 
     @Test
+    @Order(1)
     void removeAccount() {
-        mongoAccountDatabaseAccess.addAccount("test-account", "test-password");
         mongoAccountDatabaseAccess.deleteAccount("test-account");
         assertEquals(false, mongoAccountDatabaseAccess.validate("test-account", "test-password"));
 
-        redisAccountDatabaseAccess.addAccount("test-account", "test-password");
         redisAccountDatabaseAccess.deleteAccount("test-account");
         assertEquals(false, redisAccountDatabaseAccess.validate("test-accouht", "test-password"));
     }
