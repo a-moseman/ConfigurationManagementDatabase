@@ -2,7 +2,6 @@ package org.amoseman.cmdb.application.authentication;
 
 import javax.security.auth.Subject;
 import java.security.Principal;
-import java.util.Set;
 
 public class User implements Principal {
     private final String name;

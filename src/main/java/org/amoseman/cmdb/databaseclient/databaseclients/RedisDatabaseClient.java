@@ -19,4 +19,9 @@ public class RedisDatabaseClient implements DatabaseClient {
     public RedissonClient getDatabase() {
         return redissonClient;
     }
+
+    @Override
+    public void close() {
+        this.redissonClient.shutdown();
+    }
 }

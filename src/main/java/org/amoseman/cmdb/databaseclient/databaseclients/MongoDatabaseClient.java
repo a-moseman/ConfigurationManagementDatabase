@@ -29,4 +29,9 @@ public class MongoDatabaseClient implements DatabaseClient {
     public MongoDatabase getDatabase() {
         return database;
     }
+
+    @Override
+    public void close() {
+        this.client.close();
+    }
 }

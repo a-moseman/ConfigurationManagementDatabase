@@ -37,7 +37,10 @@ public class MongoConfigurationDatabaseAccess extends ConfigurationDatabaseAcces
         BasicDBObject update = new BasicDBObject().append("$set",
                 new BasicDBObject("value", value)
         );
-        database.getCollection(account).updateOne(search, update);
+        if (collectionMissing(account)) {
+            return;
+        }
+        getCollection(account).updateOne(search, update);
     }
 
     @Override
@@ -58,7 +61,7 @@ public class MongoConfigurationDatabaseAccess extends ConfigurationDatabaseAcces
         if (collectionMissing(account)) {
             return;
         }
-        MongoCollection<Document> collection = database.getCollection(account);
+        MongoCollection<Document> collection = getCollection(account);
         Document document = collection.find(eq("label", label)).first();
         if (document == null) {
             return;
@@ -71,6 +74,6 @@ public class MongoConfigurationDatabaseAccess extends ConfigurationDatabaseAcces
     }
 
     private boolean collectionMissing(String collectionName) {
-        return !database.listCollectionNames().into(new ArrayList<>()).contains(collectionName);
+        return !database.listCollectionNames().into(new ArrayList<>()).contains(String.format("%s-%s", COLLECTION_PREFIX, collectionName));
     }
 }
