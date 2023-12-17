@@ -17,7 +17,7 @@ public class RedisConfigurationDatabaseAccess extends ConfigurationDatabaseAcces
 
     @Override
     public Optional<String> getConfigurationValue(String account, String label) {
-        RMap<String, String> map = database.getMap(account);
+        RMap<String, String> map = getMap(account);
         if (map.containsKey(label)) {
             return Optional.of(map.get(label));
         }
@@ -26,7 +26,7 @@ public class RedisConfigurationDatabaseAccess extends ConfigurationDatabaseAcces
 
     @Override
     public void setConfigurationValue(String account, String label, String value) {
-        RMap<String, String> map = database.getMap(account);
+        RMap<String, String> map = getMap(account);
         if (!map.containsKey((label))) {
             return;
         }
@@ -35,7 +35,7 @@ public class RedisConfigurationDatabaseAccess extends ConfigurationDatabaseAcces
 
     @Override
     public void addConfigurationValue(String account, String label, String value) {
-        RMap<String, String> map = database.getMap(account);
+        RMap<String, String> map = getMap(account);
         if (map.containsKey((label))) {
             return;
         }
@@ -44,10 +44,14 @@ public class RedisConfigurationDatabaseAccess extends ConfigurationDatabaseAcces
 
     @Override
     public void removeConfigurationValue(String account, String label) {
-        RMap<String, String> map = database.getMap(account);
+        RMap<String, String> map = getMap(account);
         if (!map.containsKey(label)) {
             return;
         }
         map.remove(label);
+    }
+
+    private RMap<String, String> getMap(String account) {
+        return database.getMap(String.format("CONFIGURATIONS-%s", account));
     }
 }

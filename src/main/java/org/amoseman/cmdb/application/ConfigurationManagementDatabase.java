@@ -6,17 +6,19 @@ import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
-import org.amoseman.cmdb.AccountLoader;
 import org.amoseman.cmdb.application.authentication.User;
 import org.amoseman.cmdb.application.authentication.UserAuthenticator;
 import org.amoseman.cmdb.application.configuration.ConfigurationManagementDatabaseConfiguration;
+import org.amoseman.cmdb.application.resources.AccountResource;
 import org.amoseman.cmdb.application.resources.ConfigurationResource;
+import org.amoseman.cmdb.dao.AccountDatabaseAccess;
 import org.amoseman.cmdb.dao.ConfigurationDatabaseAccess;
+import org.amoseman.cmdb.dao.accountdaos.MongoAccountDatabaseAccess;
+import org.amoseman.cmdb.dao.accountdaos.RedisAccountDatabaseAccess;
 import org.amoseman.cmdb.dao.configurationdaos.MongoConfigurationDatabaseAccess;
 import org.amoseman.cmdb.dao.configurationdaos.RedisConfigurationDatabaseAccess;
 import org.amoseman.cmdb.databaseclient.databaseclients.MongoDatabaseClient;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
-import java.util.Map;
 
 public class ConfigurationManagementDatabase extends Application<ConfigurationManagementDatabaseConfiguration>  {
     @Override
@@ -32,13 +34,16 @@ public class ConfigurationManagementDatabase extends Application<ConfigurationMa
     @Override
     public void run(ConfigurationManagementDatabaseConfiguration configuration, Environment environment) {
         ConfigurationDatabaseAccess configurationDatabaseAccess = getConfigurationDatabaseAccess(configuration);
-        ConfigurationResource resource = new ConfigurationResource(configurationDatabaseAccess, configuration.getDefaultValue());
-        environment.jersey().register(resource);
+        ConfigurationResource configurationResource = new ConfigurationResource(configurationDatabaseAccess, configuration.getDefaultValue());
+        environment.jersey().register(configurationResource);
+
+        AccountDatabaseAccess accountDatabaseAccess = getAccountDatabaseAccess(configuration);
+        AccountResource accountResource = new AccountResource(accountDatabaseAccess);
+        environment.jersey().register(accountResource);
 
         // security
-        Map<String, String> passwords = AccountLoader.load(configuration.getAccountFilePath());
         environment.jersey().register(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<User>()
-                .setAuthenticator(new UserAuthenticator(passwords))
+                .setAuthenticator(new UserAuthenticator(accountDatabaseAccess))
                 .setRealm("BASIC-AUTH-REALM")
                 .buildAuthFilter()
         ));
@@ -56,6 +61,22 @@ public class ConfigurationManagementDatabase extends Application<ConfigurationMa
             case "MONGO" -> {
                 MongoDatabaseClient mongoClient = new MongoDatabaseClient(databaseAddress);
                 yield new MongoConfigurationDatabaseAccess(mongoClient);
+            }
+            default -> throw new RuntimeException("Invalid database type");
+        };
+    }
+
+    private AccountDatabaseAccess getAccountDatabaseAccess(ConfigurationManagementDatabaseConfiguration configuration) {
+        String databaseType = configuration.getDatabaseType();
+        String databaseAddress = configuration.getDatabaseAddress();
+        return switch (databaseType) {
+            case "REDIS" -> {
+                RedisDatabaseClient redisClient = new RedisDatabaseClient(databaseAddress);
+                yield new RedisAccountDatabaseAccess(redisClient);
+            }
+            case "MONGO" -> {
+                MongoDatabaseClient mongoClient = new MongoDatabaseClient(databaseAddress);
+                yield new MongoAccountDatabaseAccess(mongoClient);
             }
             default -> throw new RuntimeException("Invalid database type");
         };

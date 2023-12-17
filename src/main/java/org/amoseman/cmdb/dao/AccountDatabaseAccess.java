@@ -8,6 +8,6 @@ public abstract class AccountDatabaseAccess extends DatabaseAccessObject {
     }
 
     public abstract void addAccount(String account, String password);
-    public abstract void deleteAccount(String account, String password);
-    public abstract boolean isPasswordValid(String account, String password);
+    public abstract void deleteAccount(String account);
+    public abstract boolean validate(String account, String password);
 }
