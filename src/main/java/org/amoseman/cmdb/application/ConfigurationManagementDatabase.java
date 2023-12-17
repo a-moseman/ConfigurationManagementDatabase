@@ -8,7 +8,7 @@ import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
 import org.amoseman.cmdb.application.authentication.User;
 import org.amoseman.cmdb.application.authentication.UserAuthenticator;
-import org.amoseman.cmdb.application.configuration.ConfigurationManagementDatabaseConfiguration;
+import org.amoseman.cmdb.application.configuration.ApplicationConfiguration;
 import org.amoseman.cmdb.application.resources.AccountResource;
 import org.amoseman.cmdb.application.resources.ConfigurationResource;
 import org.amoseman.cmdb.dao.AccountDatabaseAccess;
@@ -20,19 +20,19 @@ import org.amoseman.cmdb.dao.configurationdaos.RedisConfigurationDatabaseAccess;
 import org.amoseman.cmdb.databaseclient.databaseclients.MongoDatabaseClient;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
 
-public class ConfigurationManagementDatabase extends Application<ConfigurationManagementDatabaseConfiguration>  {
+public class ConfigurationManagementDatabase extends Application<ApplicationConfiguration>  {
     @Override
     public String getName() {
         return "cmdb";
     }
 
     @Override
-    public void initialize(Bootstrap<ConfigurationManagementDatabaseConfiguration> bootstrap) {
+    public void initialize(Bootstrap<ApplicationConfiguration> bootstrap) {
         // todo?
     }
 
     @Override
-    public void run(ConfigurationManagementDatabaseConfiguration configuration, Environment environment) {
+    public void run(ApplicationConfiguration configuration, Environment environment) {
         ConfigurationDatabaseAccess configurationDatabaseAccess = getConfigurationDatabaseAccess(configuration);
         ConfigurationResource configurationResource = new ConfigurationResource(configurationDatabaseAccess, configuration.getDefaultValue());
         environment.jersey().register(configurationResource);
@@ -50,7 +50,7 @@ public class ConfigurationManagementDatabase extends Application<ConfigurationMa
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
     }
 
-    private ConfigurationDatabaseAccess getConfigurationDatabaseAccess(ConfigurationManagementDatabaseConfiguration configuration) {
+    private ConfigurationDatabaseAccess getConfigurationDatabaseAccess(ApplicationConfiguration configuration) {
         String databaseType = configuration.getDatabaseType();
         String databaseAddress = configuration.getDatabaseAddress();
         return switch (databaseType) {
@@ -66,7 +66,7 @@ public class ConfigurationManagementDatabase extends Application<ConfigurationMa
         };
     }
 
-    private AccountDatabaseAccess getAccountDatabaseAccess(ConfigurationManagementDatabaseConfiguration configuration) {
+    private AccountDatabaseAccess getAccountDatabaseAccess(ApplicationConfiguration configuration) {
         String databaseType = configuration.getDatabaseType();
         String databaseAddress = configuration.getDatabaseAddress();
         return switch (databaseType) {
