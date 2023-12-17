@@ -1,17 +1,10 @@
 package org.amoseman.cmdb.databaseclient.databaseclients;
 
-import com.mongodb.BasicDBObject;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.*;
 import org.amoseman.cmdb.databaseclient.DatabaseClient;
-import org.bson.Document;
-
-import java.util.ArrayList;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-
-import static com.mongodb.client.model.Filters.eq;
 
 public class MongoDatabaseClient implements DatabaseClient {
     private static final String MONGO_DATABASE_NAME = "cmdb";

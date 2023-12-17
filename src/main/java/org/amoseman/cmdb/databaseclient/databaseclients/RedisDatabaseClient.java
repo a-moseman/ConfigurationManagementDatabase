@@ -2,11 +2,8 @@ package org.amoseman.cmdb.databaseclient.databaseclients;
 
 import org.amoseman.cmdb.databaseclient.DatabaseClient;
 import org.redisson.Redisson;
-import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
-
-import java.util.Optional;
 
 public class RedisDatabaseClient implements DatabaseClient {
     private final RedissonClient redissonClient;
