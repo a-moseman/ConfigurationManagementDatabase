@@ -7,9 +7,6 @@ import org.amoseman.cmdb.databaseclient.databaseclients.MongoDatabaseClient;
 import org.amoseman.cmdb.security.PasswordHasher;
 import org.bson.Document;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-
 import static com.mongodb.client.model.Filters.eq;
 
 public class MongoAccountDatabaseAccess extends AccountDatabaseAccess {

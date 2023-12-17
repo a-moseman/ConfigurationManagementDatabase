@@ -13,6 +13,7 @@ import java.util.Optional;
 import static com.mongodb.client.model.Filters.eq;
 
 public class MongoConfigurationDatabaseAccess extends ConfigurationDatabaseAccess {
+    private static final String COLLECTION_PREFIX = "CONFIGURATIONS";
     private final MongoDatabase database;
 
     public MongoConfigurationDatabaseAccess(MongoDatabaseClient client) {
@@ -22,11 +23,7 @@ public class MongoConfigurationDatabaseAccess extends ConfigurationDatabaseAcces
 
     @Override
     public Optional<String> getConfigurationValue(String account, String label) {
-        Optional<MongoCollection<Document>> maybe = getCollection(account);
-        if (maybe.isEmpty()) {
-            return Optional.empty();
-        }
-        MongoCollection<Document> collection = maybe.get();
+        MongoCollection<Document> collection = getCollection(account);
         Document document = collection.find(eq("label", label)).first();
         if (document == null || document.isEmpty()) {
             return Optional.empty();
@@ -45,15 +42,7 @@ public class MongoConfigurationDatabaseAccess extends ConfigurationDatabaseAcces
 
     @Override
     public void addConfigurationValue(String account, String label, String value) {
-        Optional<MongoCollection<Document>> maybe = getCollection(account);
-        MongoCollection<Document> collection;
-        if (maybe.isEmpty()) {
-            database.createCollection(account);
-            collection = database.getCollection(account);
-        }
-        else {
-            collection = maybe.get();
-        }
+        MongoCollection<Document> collection = getCollection(account);
         Document existing = collection.find(eq("label", label)).first();
         if (existing != null) {
             return;
@@ -77,11 +66,8 @@ public class MongoConfigurationDatabaseAccess extends ConfigurationDatabaseAcces
         collection.deleteOne(document);
     }
 
-    private Optional<MongoCollection<Document>> getCollection(String account) {
-        if (collectionMissing(account)) {
-            return Optional.empty();
-        }
-        return Optional.of(database.getCollection(account));
+    private MongoCollection<Document> getCollection(String account) {
+        return database.getCollection(String.format("%s-%s", COLLECTION_PREFIX, account));
     }
 
     private boolean collectionMissing(String collectionName) {

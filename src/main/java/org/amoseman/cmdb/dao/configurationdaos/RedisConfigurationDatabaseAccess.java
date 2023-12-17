@@ -8,6 +8,7 @@ import org.redisson.api.RedissonClient;
 import java.util.Optional;
 
 public class RedisConfigurationDatabaseAccess extends ConfigurationDatabaseAccess {
+    private static final String COLLECTION_PREFIX = "CONFIGURATIONS";
     private final RedissonClient database;
 
     public RedisConfigurationDatabaseAccess(RedisDatabaseClient client) {
@@ -52,6 +53,6 @@ public class RedisConfigurationDatabaseAccess extends ConfigurationDatabaseAcces
     }
 
     private RMap<String, String> getMap(String account) {
-        return database.getMap(String.format("CONFIGURATIONS-%s", account));
+        return database.getMap(String.format("%s-%s", COLLECTION_PREFIX, account));
     }
 }
