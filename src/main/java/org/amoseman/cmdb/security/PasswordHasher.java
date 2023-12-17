@@ -13,7 +13,7 @@ public class PasswordHasher {
     private static final int HASH_LENGTH = 32;
     private static final int PARALLELISM = 1;
     private static final int SALT_LENGTH = 16;
-    private SecureRandom random;
+    private final SecureRandom random;
 
 
     public PasswordHasher() {

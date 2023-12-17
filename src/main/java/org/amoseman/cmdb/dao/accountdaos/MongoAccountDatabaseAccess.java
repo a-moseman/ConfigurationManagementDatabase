@@ -17,7 +17,7 @@ public class MongoAccountDatabaseAccess extends AccountDatabaseAccess {
 
     private final MongoDatabase database;
     private final PasswordHasher passwordHasher;
-    private MongoCollection<Document> collection;
+    private final MongoCollection<Document> collection;
 
     public MongoAccountDatabaseAccess(MongoDatabaseClient client) {
         super(client);
