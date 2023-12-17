@@ -6,12 +6,9 @@ import org.amoseman.cmdb.security.PasswordHasher;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
 public class RedisAccountDatabaseAccess extends AccountDatabaseAccess {
-    private RedissonClient database;
-    private PasswordHasher passwordHasher;
+    private final RedissonClient database;
+    private final PasswordHasher passwordHasher;
 
     public RedisAccountDatabaseAccess(RedisDatabaseClient client) {
         super(client);

@@ -8,8 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 public class MongoDatabaseClient implements DatabaseClient {
     private static final String MONGO_DATABASE_NAME = "cmdb";
-    private MongoClient client;
-    private MongoDatabase database;
+    private final MongoClient client;
+    private final MongoDatabase database;
 
     public MongoDatabaseClient(String address) {
         String connectionString = String.format("mongodb://%s", address);

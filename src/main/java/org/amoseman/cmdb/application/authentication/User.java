@@ -6,20 +6,14 @@ import java.util.Set;
 
 public class User implements Principal {
     private final String name;
-    private final Set<String> roles;
 
     public User(String name) {
         this.name = name;
-        this.roles = null;
     }
 
     @Override
     public String getName() {
         return name;
-    }
-
-    public Set<String> getRoles() {
-        return roles;
     }
 
     @Override

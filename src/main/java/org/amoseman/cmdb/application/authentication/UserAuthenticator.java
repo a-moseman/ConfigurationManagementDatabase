@@ -5,9 +5,7 @@ import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
 import org.amoseman.cmdb.dao.AccountDatabaseAccess;
 
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 public class UserAuthenticator implements Authenticator<BasicCredentials, User> {
     private final AccountDatabaseAccess accountDatabaseAccess;
