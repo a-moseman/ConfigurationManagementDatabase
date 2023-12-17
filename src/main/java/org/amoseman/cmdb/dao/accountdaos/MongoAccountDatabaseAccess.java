@@ -26,8 +26,11 @@ public class MongoAccountDatabaseAccess extends AccountDatabaseAccess {
     @Override
     public void addAccount(String account, String password) {
         MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
-        String hash = passwordHasher.hash(password);
-        Document document = new Document().append(ACCOUNT_KEY, account).append(PASSWORD_KEY, hash);
+        if (collection.find(eq(ACCOUNT_KEY, account)).first() != null) {
+            return;
+        }
+        byte[] hash = passwordHasher.generate(password);
+        Document document = new Document().append(ACCOUNT_KEY, account).append(PASSWORD_KEY, new String(hash));
         collection.insertOne(document);
     }
 
@@ -41,8 +44,13 @@ public class MongoAccountDatabaseAccess extends AccountDatabaseAccess {
     public boolean validate(String account, String password) {
         MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
         Document search = collection.find(eq(ACCOUNT_KEY, account)).first();
-        String hash = passwordHasher.hash(password);
-        assert search != null;
-        return search.get(PASSWORD_KEY).equals(hash);
+        if (search == null) {
+            return false;
+        }
+        String hash = (String) search.get(PASSWORD_KEY);
+        if (hash == null) {
+            return false;
+        }
+        return passwordHasher.validate(password, hash);
     }
 }

@@ -31,9 +31,8 @@ dependencies {
     implementation 'org.redisson:redisson:3.24.3'
     implementation 'org.mongodb:mongodb-driver-sync:4.11.1'
     // hashing
-    implementation 'org.springframework.security:spring-security-crypto:6.0.3'
-
-
+    //implementation 'org.springframework.security:spring-security-crypto:6.0.3'
+    implementation 'org.bouncycastle:bcpkix-jdk18on:1.76'
 }
 
 test {

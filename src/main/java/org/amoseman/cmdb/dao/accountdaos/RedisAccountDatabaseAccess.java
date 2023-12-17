@@ -6,6 +6,9 @@ import org.amoseman.cmdb.security.PasswordHasher;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
 public class RedisAccountDatabaseAccess extends AccountDatabaseAccess {
     private RedissonClient database;
     private PasswordHasher passwordHasher;
@@ -19,8 +22,11 @@ public class RedisAccountDatabaseAccess extends AccountDatabaseAccess {
     @Override
     public void addAccount(String account, String password) {
         RMap<String, String> hashes = database.getMap("PASSWORDS");
-        String hash = passwordHasher.hash(password);
-        hashes.put(account, hash);
+        byte[] hash = passwordHasher.generate(password);
+        if (hashes.get(account) != null) {
+            return;
+        }
+        hashes.put(account, new String(hash));
     }
 
     @Override
@@ -32,7 +38,6 @@ public class RedisAccountDatabaseAccess extends AccountDatabaseAccess {
     @Override
     public boolean validate(String account, String password) {
         RMap<String, String> hashes = database.getMap("PASSWORDS");
-        String hashAttempt = passwordHasher.hash(password);
-        return hashes.get(account).equals(hashAttempt);
+        return passwordHasher.validate(password, hashes.get(account));
     }
 }
