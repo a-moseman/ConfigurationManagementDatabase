@@ -43,33 +43,33 @@ class ConfigurationResourceTest {
     @Test
     @Order(2)
     void read() {
-        assertEquals("changed", mongoConfigurationDatabaseAccess.getConfigurationValue("test-account", "test-conf").get());
-        assertEquals("changed", redisConfigurationDatabaseAccess.getConfigurationValue("test-account", "test-conf").get());
+        assertEquals("changed", mongoConfigurationDatabaseAccess.getValue("test-account", "test-conf").get().getContent());
+        assertEquals("changed", redisConfigurationDatabaseAccess.getValue("test-account", "test-conf").get().getContent());
     }
 
     @Test
     @Order(0)
     void create() {
-        mongoConfigurationDatabaseAccess.addConfigurationValue("test-account", "test-conf", "test-val");
-        redisConfigurationDatabaseAccess.addConfigurationValue("test-account", "test-conf", "test-val");
-        assertEquals("test-val", mongoConfigurationDatabaseAccess.getConfigurationValue("test-account", "test-conf").get());
-        assertEquals("test-val", redisConfigurationDatabaseAccess.getConfigurationValue("test-account", "test-conf").get());
+        mongoConfigurationDatabaseAccess.addValue("test-account", "test-conf", "test-val");
+        redisConfigurationDatabaseAccess.addValue("test-account", "test-conf", "test-val");
+        assertEquals("test-val", mongoConfigurationDatabaseAccess.getValue("test-account", "test-conf").get().getContent());
+        assertEquals("test-val", redisConfigurationDatabaseAccess.getValue("test-account", "test-conf").get().getContent());
     }
 
     @Test
     @Order(1)
     void update() {
-        mongoConfigurationDatabaseAccess.setConfigurationValue("test-account", "test-conf", "changed");
-        redisConfigurationDatabaseAccess.setConfigurationValue("test-account", "test-conf", "changed");
+        mongoConfigurationDatabaseAccess.setValue("test-account", "test-conf", "changed");
+        redisConfigurationDatabaseAccess.setValue("test-account", "test-conf", "changed");
     }
 
     @Test
     @Order(3)
     void delete() {
-        mongoConfigurationDatabaseAccess.removeConfigurationValue("test-account", "test-conf");
-        redisConfigurationDatabaseAccess.removeConfigurationValue("test-account", "test-conf");
+        mongoConfigurationDatabaseAccess.removeValue("test-account", "test-conf");
+        redisConfigurationDatabaseAccess.removeValue("test-account", "test-conf");
 
-        assertEquals(Optional.empty(), mongoConfigurationDatabaseAccess.getConfigurationValue("test-account", "test-conf"));
-        assertEquals(Optional.empty(), redisConfigurationDatabaseAccess.getConfigurationValue("test-account", "test-conf"));
+        assertEquals(Optional.empty(), mongoConfigurationDatabaseAccess.getValue("test-account", "test-conf"));
+        assertEquals(Optional.empty(), redisConfigurationDatabaseAccess.getValue("test-account", "test-conf"));
     }
 }

@@ -11,12 +11,8 @@ public class ApplicationConfiguration extends Configuration {
     @NotEmpty
     private String databaseAddress;
 
-
     @NotEmpty
     private String databaseType;
-
-
-
 
     @JsonProperty
     public String getDefaultValue() {

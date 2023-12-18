@@ -1,14 +1,16 @@
 package org.amoseman.cmdb.dao.configurationdaos;
 
+import org.amoseman.cmdb.application.configuration.ConfigurationValue;
 import org.amoseman.cmdb.dao.ConfigurationDatabaseAccess;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 public class RedisConfigurationDatabaseAccess extends ConfigurationDatabaseAccess {
-    private static final String COLLECTION_PREFIX = "CONFIGURATIONS";
     private final RedissonClient database;
 
     public RedisConfigurationDatabaseAccess(RedisDatabaseClient client) {
@@ -17,42 +19,68 @@ public class RedisConfigurationDatabaseAccess extends ConfigurationDatabaseAcces
     }
 
     @Override
-    public Optional<String> getConfigurationValue(String account, String label) {
-        RMap<String, String> map = getMap(account);
-        if (map.containsKey(label)) {
-            return Optional.of(map.get(label));
+    public Optional<ConfigurationValue> getValue(String account, String label) {
+        RMap<String, String> configurations = getConfigurationMap(account);
+        RMap<String, String> createds = getCreatedMap(account);
+        RMap<String, String> updateds = getUpdatedMap(account);
+        if (!configurations.containsKey(label)) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        String value = configurations.get(label);
+        String created = createds.get(label);
+        String updated = updateds.get(label);
+        return Optional.of(new ConfigurationValue(value, created, updated));
     }
 
     @Override
-    public void setConfigurationValue(String account, String label, String value) {
-        RMap<String, String> map = getMap(account);
-        if (!map.containsKey((label))) {
+    public void setValue(String account, String label, String value) {
+        RMap<String, String> configurations = getConfigurationMap(account);
+        RMap<String, String> updateds = getUpdatedMap(account);
+        if (!configurations.containsKey((label))) {
             return;
         }
-        map.put(label, value);
+        LocalDateTime dateTime = LocalDateTime.now();
+        configurations.put(label, value);
+        updateds.put(label, dateTime.format(DateTimeFormatter.ISO_DATE_TIME));
     }
 
     @Override
-    public void addConfigurationValue(String account, String label, String value) {
-        RMap<String, String> map = getMap(account);
-        if (map.containsKey((label))) {
+    public void addValue(String account, String label, String value) {
+        RMap<String, String> configurations = getConfigurationMap(account);
+        RMap<String, String> createds = getCreatedMap(account);
+        RMap<String, String> updateds = getUpdatedMap(account);
+        if (configurations.containsKey((label))) {
             return;
         }
-        map.put(label, value);
+        configurations.put(label, value);
+        LocalDateTime dateTime = LocalDateTime.now();
+        String dateTimeString = dateTime.format(DateTimeFormatter.ISO_DATE_TIME);
+        createds.put(label, dateTimeString);
+        updateds.put(label, dateTimeString);
     }
 
     @Override
-    public void removeConfigurationValue(String account, String label) {
-        RMap<String, String> map = getMap(account);
-        if (!map.containsKey(label)) {
+    public void removeValue(String account, String label) {
+        RMap<String, String> configurations = getConfigurationMap(account);
+        RMap<String, String> createds = getCreatedMap(account);
+        RMap<String, String> updateds = getUpdatedMap(account);
+        if (!configurations.containsKey(label)) {
             return;
         }
-        map.remove(label);
+        configurations.remove(label);
+        createds.remove(label);
+        updateds.remove(label);
     }
 
-    private RMap<String, String> getMap(String account) {
-        return database.getMap(String.format("%s-%s", COLLECTION_PREFIX, account));
+    private RMap<String, String> getConfigurationMap(String account) {
+        return database.getMap(String.format("CONFIGURATION-%s", account));
+    }
+
+    private RMap<String, String> getCreatedMap(String account) {
+        return database.getMap(String.format("CREATED-%s", account));
+    }
+
+    private RMap<String, String> getUpdatedMap(String account) {
+        return database.getMap(String.format("UPDATED-%s", account));
     }
 }
