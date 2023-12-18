@@ -14,6 +14,12 @@ public class ApplicationConfiguration extends Configuration {
     @NotEmpty
     private String databaseType;
 
+    @NotEmpty
+    private String databaseUsername;
+
+    @NotEmpty
+    private String databasePassword;
+
     @JsonProperty
     public String getDefaultValue() {
         return defaultValue;
@@ -42,5 +48,25 @@ public class ApplicationConfiguration extends Configuration {
     @JsonProperty
     public void setDatabaseType(String databaseType) {
         this.databaseType = databaseType;
+    }
+
+    @JsonProperty
+    public String getDatabaseUsername() {
+        return databaseUsername;
+    }
+
+    @JsonProperty
+    public void setDatabaseUsername(String databaseUsername) {
+        this.databaseUsername = databaseUsername;
+    }
+
+    @JsonProperty
+    public String getDatabasePassword() {
+        return databasePassword;
+    }
+
+    @JsonProperty
+    public void setDatabasePassword(String databasePassword) {
+        this.databasePassword = databasePassword;
     }
 }

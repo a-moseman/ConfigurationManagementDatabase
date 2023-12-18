@@ -8,8 +8,8 @@ import org.redisson.config.Config;
 public class RedisDatabaseClient implements DatabaseClient {
     private final RedissonClient redissonClient;
 
-    public RedisDatabaseClient(String address) {
-        String connectionString = String.format("redis://%s", address);
+    public RedisDatabaseClient(String address, String username, String password) {
+        String connectionString = String.format("redis://%s:%s@%s", username, password, address);
         Config config = new Config();
         config.useSingleServer().setAddress(connectionString);
         this.redissonClient = Redisson.create(config);

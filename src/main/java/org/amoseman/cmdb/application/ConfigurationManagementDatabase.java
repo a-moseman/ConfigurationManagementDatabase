@@ -17,6 +17,7 @@ import org.amoseman.cmdb.dao.accountdaos.MongoAccountDatabaseAccess;
 import org.amoseman.cmdb.dao.accountdaos.RedisAccountDatabaseAccess;
 import org.amoseman.cmdb.dao.configurationdaos.MongoConfigurationDatabaseAccess;
 import org.amoseman.cmdb.dao.configurationdaos.RedisConfigurationDatabaseAccess;
+import org.amoseman.cmdb.databaseclient.DatabaseClient;
 import org.amoseman.cmdb.databaseclient.databaseclients.MongoDatabaseClient;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
 
@@ -33,11 +34,30 @@ public class ConfigurationManagementDatabase extends Application<ApplicationConf
 
     @Override
     public void run(ApplicationConfiguration configuration, Environment environment) {
-        ConfigurationDatabaseAccess configurationDatabaseAccess = getConfigurationDatabaseAccess(configuration);
+        ConfigurationDatabaseAccess configurationDatabaseAccess;
+        AccountDatabaseAccess accountDatabaseAccess;
+        String type = configuration.getDatabaseType();
+        String address = configuration.getDatabaseAddress();
+        String username = configuration.getDatabaseUsername();
+        String password = configuration.getDatabasePassword();
+        switch (type) {
+            case "REDIS" -> {
+                RedisDatabaseClient client = new RedisDatabaseClient(address, username, password);
+                configurationDatabaseAccess = new RedisConfigurationDatabaseAccess(client);
+                accountDatabaseAccess =  new RedisAccountDatabaseAccess(client);
+            }
+            case "MONGO" -> {
+                MongoDatabaseClient client = new MongoDatabaseClient(address, username, password);
+                configurationDatabaseAccess = new MongoConfigurationDatabaseAccess(client);
+                accountDatabaseAccess = new MongoAccountDatabaseAccess(client);
+            }
+            default -> throw new RuntimeException("Invalid database type");
+        };
+
+
         ConfigurationResource configurationResource = new ConfigurationResource(configurationDatabaseAccess, configuration.getDefaultValue());
         environment.jersey().register(configurationResource);
 
-        AccountDatabaseAccess accountDatabaseAccess = getAccountDatabaseAccess(configuration);
         AccountResource accountResource = new AccountResource(accountDatabaseAccess);
         environment.jersey().register(accountResource);
 
@@ -48,37 +68,5 @@ public class ConfigurationManagementDatabase extends Application<ApplicationConf
                 .buildAuthFilter()
         ));
         environment.jersey().register(new AuthValueFactoryProvider.Binder<>(User.class));
-    }
-
-    private ConfigurationDatabaseAccess getConfigurationDatabaseAccess(ApplicationConfiguration configuration) {
-        String databaseType = configuration.getDatabaseType();
-        String databaseAddress = configuration.getDatabaseAddress();
-        return switch (databaseType) {
-            case "REDIS" -> {
-                RedisDatabaseClient redisClient = new RedisDatabaseClient(databaseAddress);
-                yield new RedisConfigurationDatabaseAccess(redisClient);
-            }
-            case "MONGO" -> {
-                MongoDatabaseClient mongoClient = new MongoDatabaseClient(databaseAddress);
-                yield new MongoConfigurationDatabaseAccess(mongoClient);
-            }
-            default -> throw new RuntimeException("Invalid database type");
-        };
-    }
-
-    private AccountDatabaseAccess getAccountDatabaseAccess(ApplicationConfiguration configuration) {
-        String databaseType = configuration.getDatabaseType();
-        String databaseAddress = configuration.getDatabaseAddress();
-        return switch (databaseType) {
-            case "REDIS" -> {
-                RedisDatabaseClient redisClient = new RedisDatabaseClient(databaseAddress);
-                yield new RedisAccountDatabaseAccess(redisClient);
-            }
-            case "MONGO" -> {
-                MongoDatabaseClient mongoClient = new MongoDatabaseClient(databaseAddress);
-                yield new MongoAccountDatabaseAccess(mongoClient);
-            }
-            default -> throw new RuntimeException("Invalid database type");
-        };
     }
 }
