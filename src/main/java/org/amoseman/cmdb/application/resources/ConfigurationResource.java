@@ -9,7 +9,6 @@ import jakarta.ws.rs.core.MediaType;
 import org.amoseman.cmdb.application.authentication.User;
 import org.amoseman.cmdb.application.configuration.ConfigurationValue;
 import org.amoseman.cmdb.dao.ConfigurationDatabaseAccess;
-import org.checkerframework.checker.units.qual.C;
 
 @Path("/cmdb")
 @Produces(MediaType.APPLICATION_JSON)
