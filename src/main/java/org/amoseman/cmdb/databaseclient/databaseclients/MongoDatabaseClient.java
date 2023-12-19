@@ -11,8 +11,7 @@ public class MongoDatabaseClient implements DatabaseClient {
     private final MongoClient client;
     private final MongoDatabase database;
 
-    public MongoDatabaseClient(String address, String username, String password) {
-        String connectionString = String.format("mongodb://%s:%s@%s", username, password, address);
+    public MongoDatabaseClient(String connectionString) {
         this.client = MongoClients.create(MongoClientSettings.builder()
                         .applyConnectionString(new ConnectionString(connectionString))
                         .applyToConnectionPoolSettings(builder ->

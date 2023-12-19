@@ -23,12 +23,12 @@ class ConfigurationResourceTest {
 
     @BeforeEach
     void setUp() {
-        mongoDatabaseClient = new MongoDatabaseClient("localhost:27017", "example", "example");
+        mongoDatabaseClient = new MongoDatabaseClient("mongodb://localhost:27017");
         mongoAccountDatabaseAccess = new MongoAccountDatabaseAccess(mongoDatabaseClient);
         mongoConfigurationDatabaseAccess = new MongoConfigurationDatabaseAccess(mongoDatabaseClient);
         mongoAccountDatabaseAccess.addAccount("test-account", "test-password");
 
-        redisDatabaseClient = new RedisDatabaseClient("localhost:6379", "example", "example");
+        redisDatabaseClient = new RedisDatabaseClient("redis://localhost:6379");
         redisAccountDatabaseAccess = new RedisAccountDatabaseAccess(redisDatabaseClient);
         redisConfigurationDatabaseAccess = new RedisConfigurationDatabaseAccess(redisDatabaseClient);
         redisAccountDatabaseAccess.addAccount("test-account", "test-password");

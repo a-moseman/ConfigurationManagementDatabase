@@ -9,16 +9,10 @@ public class ApplicationConfiguration extends Configuration {
     private String defaultValue = "NULL";
 
     @NotEmpty
-    private String databaseAddress;
+    private String databaseConnectionString;
 
     @NotEmpty
     private String databaseType;
-
-    @NotEmpty
-    private String databaseUsername;
-
-    @NotEmpty
-    private String databasePassword;
 
     @JsonProperty
     public String getDefaultValue() {
@@ -31,13 +25,13 @@ public class ApplicationConfiguration extends Configuration {
     }
 
     @JsonProperty
-    public String getDatabaseAddress() {
-        return databaseAddress;
+    public String getDatabaseConnectionString() {
+        return databaseConnectionString;
     }
 
     @JsonProperty
-    public void setDatabaseAddress(String databaseAddress) {
-        this.databaseAddress = databaseAddress;
+    public void setDatabaseConnectionString(String databaseConnectionString) {
+        this.databaseConnectionString = databaseConnectionString;
     }
 
     @JsonProperty
@@ -48,25 +42,5 @@ public class ApplicationConfiguration extends Configuration {
     @JsonProperty
     public void setDatabaseType(String databaseType) {
         this.databaseType = databaseType;
-    }
-
-    @JsonProperty
-    public String getDatabaseUsername() {
-        return databaseUsername;
-    }
-
-    @JsonProperty
-    public void setDatabaseUsername(String databaseUsername) {
-        this.databaseUsername = databaseUsername;
-    }
-
-    @JsonProperty
-    public String getDatabasePassword() {
-        return databasePassword;
-    }
-
-    @JsonProperty
-    public void setDatabasePassword(String databasePassword) {
-        this.databasePassword = databasePassword;
     }
 }

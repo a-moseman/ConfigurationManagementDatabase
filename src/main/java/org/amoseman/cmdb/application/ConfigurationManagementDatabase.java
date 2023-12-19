@@ -17,7 +17,6 @@ import org.amoseman.cmdb.dao.accountdaos.MongoAccountDatabaseAccess;
 import org.amoseman.cmdb.dao.accountdaos.RedisAccountDatabaseAccess;
 import org.amoseman.cmdb.dao.configurationdaos.MongoConfigurationDatabaseAccess;
 import org.amoseman.cmdb.dao.configurationdaos.RedisConfigurationDatabaseAccess;
-import org.amoseman.cmdb.databaseclient.DatabaseClient;
 import org.amoseman.cmdb.databaseclient.databaseclients.MongoDatabaseClient;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
 
@@ -37,17 +36,15 @@ public class ConfigurationManagementDatabase extends Application<ApplicationConf
         ConfigurationDatabaseAccess configurationDatabaseAccess;
         AccountDatabaseAccess accountDatabaseAccess;
         String type = configuration.getDatabaseType();
-        String address = configuration.getDatabaseAddress();
-        String username = configuration.getDatabaseUsername();
-        String password = configuration.getDatabasePassword();
+        String connectionString = configuration.getDatabaseConnectionString();
         switch (type) {
             case "REDIS" -> {
-                RedisDatabaseClient client = new RedisDatabaseClient(address, username, password);
+                RedisDatabaseClient client = new RedisDatabaseClient(connectionString);
                 configurationDatabaseAccess = new RedisConfigurationDatabaseAccess(client);
                 accountDatabaseAccess =  new RedisAccountDatabaseAccess(client);
             }
             case "MONGO" -> {
-                MongoDatabaseClient client = new MongoDatabaseClient(address, username, password);
+                MongoDatabaseClient client = new MongoDatabaseClient(connectionString);
                 configurationDatabaseAccess = new MongoConfigurationDatabaseAccess(client);
                 accountDatabaseAccess = new MongoAccountDatabaseAccess(client);
             }
