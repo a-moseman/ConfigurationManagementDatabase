@@ -20,6 +20,9 @@ import org.amoseman.cmdb.dao.configurationdaos.RedisConfigurationDatabaseAccess;
 import org.amoseman.cmdb.databaseclient.databaseclients.MongoDatabaseClient;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
 
+/**
+ * The configuration management database (CMDB) application.
+ */
 public class ConfigurationManagementDatabase extends Application<ApplicationConfiguration>  {
     @Override
     public String getName() {
