@@ -3,6 +3,7 @@ package org.amoseman.cmdb.application.authentication;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
+import org.amoseman.cmdb.security.AccountValidator;
 
 import java.util.Optional;
 

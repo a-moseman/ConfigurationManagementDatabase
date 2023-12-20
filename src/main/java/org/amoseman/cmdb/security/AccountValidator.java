@@ -1,4 +1,4 @@
-package org.amoseman.cmdb.application.authentication;
+package org.amoseman.cmdb.security;
 
 /**
  * Interface for account validation.

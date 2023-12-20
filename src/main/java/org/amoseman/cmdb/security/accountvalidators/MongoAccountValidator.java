@@ -1,8 +1,8 @@
-package org.amoseman.cmdb.application.authentication.accountvalidators;
+package org.amoseman.cmdb.security.accountvalidators;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.amoseman.cmdb.application.authentication.AccountValidator;
+import org.amoseman.cmdb.security.AccountValidator;
 import org.amoseman.cmdb.databaseclient.databaseclients.MongoDatabaseClient;
 import org.amoseman.cmdb.security.PasswordHasher;
 import org.bson.Document;

@@ -1,6 +1,6 @@
-package org.amoseman.cmdb.application.authentication.accountvalidators;
+package org.amoseman.cmdb.security.accountvalidators;
 
-import org.amoseman.cmdb.application.authentication.AccountValidator;
+import org.amoseman.cmdb.security.AccountValidator;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
 import org.amoseman.cmdb.security.PasswordHasher;
 import org.redisson.api.RMap;
