@@ -5,12 +5,12 @@ import org.amoseman.cmdb.databaseclient.DatabaseClient;
 /**
  * Represents a database access object for accounts.
  */
-public abstract class AccountDatabaseAccess extends DatabaseAccessObject {
+public abstract class AccountDAO extends DAO {
     /**
      * Instantiate an AccountDatabaseAccess.
      * @param client DatabaseClient The connection to the database.
      */
-    public AccountDatabaseAccess(DatabaseClient client) {
+    public AccountDAO(DatabaseClient client) {
         super(client);
     }
 

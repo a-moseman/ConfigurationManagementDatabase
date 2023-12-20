@@ -1,16 +1,16 @@
 package org.amoseman.cmdb.dao.accountdaos;
 
-import org.amoseman.cmdb.dao.AccountDatabaseAccess;
+import org.amoseman.cmdb.dao.AccountDAO;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
 import org.amoseman.cmdb.security.PasswordHasher;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 
-public class RedisAccountDatabaseAccess extends AccountDatabaseAccess {
+public class RedisAccountDAO extends AccountDAO {
     private final RedissonClient database;
     private final PasswordHasher passwordHasher;
 
-    public RedisAccountDatabaseAccess(RedisDatabaseClient client) {
+    public RedisAccountDAO(RedisDatabaseClient client) {
         super(client);
         this.database = client.getDatabase();
         this.passwordHasher = new PasswordHasher();

@@ -8,12 +8,12 @@ import java.util.Optional;
 /**
  * Represents a database access object for configuration values.
  */
-public abstract class ConfigurationDatabaseAccess extends DatabaseAccessObject {
+public abstract class ConfigurationDAO extends DAO {
     /**
      * Instantiate the ConfigurationDatabaseAccess.
      * @param client DatabaseClient The connection to the database.
      */
-    public ConfigurationDatabaseAccess(DatabaseClient client) {
+    public ConfigurationDAO(DatabaseClient client) {
         super(client);
     }
 
