@@ -45,18 +45,4 @@ public class MongoAccountDAO extends AccountDAO {
     public void deleteAccount(String account) {
         collection.findOneAndDelete(eq(ACCOUNT_KEY, account));
     }
-
-    @Override
-    public boolean validate(String account, String password) {
-        Document document = collection.find(eq(ACCOUNT_KEY, account)).first();
-        if (document == null) {
-            return false;
-        }
-        String hashString = document.getString(HASH_KEY);
-        String saltString = document.getString(SALT_KEY);
-        if (hashString == null || saltString == null) {
-            return false;
-        }
-        return passwordHasher.validate(password, hashString, saltString);
-    }
 }

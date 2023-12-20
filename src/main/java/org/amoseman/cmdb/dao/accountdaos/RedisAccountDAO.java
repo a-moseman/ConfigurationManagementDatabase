@@ -18,7 +18,7 @@ public class RedisAccountDAO extends AccountDAO {
 
     @Override
     public void addAccount(String account, String password) {
-        RMap<String, String> hashes = database.getMap("PASSWORDS");
+        RMap<String, String> hashes = database.getMap("HASHES");
         RMap<String, String> salts = database.getMap("SALTS");
         byte[] salt = passwordHasher.generateSalt();
         String hash64 = passwordHasher.generate(password, salt);
@@ -32,24 +32,12 @@ public class RedisAccountDAO extends AccountDAO {
 
     @Override
     public void deleteAccount(String account) {
-        RMap<String, String> hashes = database.getMap("PASSWORDS");
+        RMap<String, String> hashes = database.getMap("HASHES");
         RMap<String, String> salts = database.getMap("SALTS");
         if (!hashes.containsKey(account) || !salts.containsKey(account)) {
             return;
         }
         hashes.remove(account);
         salts.remove(account);
-    }
-
-    @Override
-    public boolean validate(String account, String password) {
-        RMap<String, String> hashes = database.getMap("PASSWORDS");
-        RMap<String, String> salts = database.getMap("SALTS");
-        String hashString = hashes.get(account);
-        String saltString = salts.get(account);
-        if (hashString == null || saltString == null) {
-            return false;
-        }
-        return passwordHasher.validate(password, hashes.get(account), salts.get(account));
     }
 }

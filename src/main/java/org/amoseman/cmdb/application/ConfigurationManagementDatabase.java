@@ -6,8 +6,11 @@ import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.core.Application;
 import io.dropwizard.core.setup.Bootstrap;
 import io.dropwizard.core.setup.Environment;
+import org.amoseman.cmdb.application.authentication.AccountValidator;
 import org.amoseman.cmdb.application.authentication.User;
 import org.amoseman.cmdb.application.authentication.UserAuthenticator;
+import org.amoseman.cmdb.application.authentication.accountvalidators.MongoAccountValidator;
+import org.amoseman.cmdb.application.authentication.accountvalidators.RedisAccountValidator;
 import org.amoseman.cmdb.application.configuration.ApplicationConfiguration;
 import org.amoseman.cmdb.application.resources.AccountResource;
 import org.amoseman.cmdb.application.resources.ConfigurationResource;
@@ -38,6 +41,7 @@ public class ConfigurationManagementDatabase extends Application<ApplicationConf
     public void run(ApplicationConfiguration configuration, Environment environment) {
         ConfigurationDAO configurationDAO;
         AccountDAO accountDAO;
+        AccountValidator accountValidator;
         String type = configuration.getDatabaseType();
         String connectionString = configuration.getDatabaseConnectionString();
         switch (type) {
@@ -45,11 +49,13 @@ public class ConfigurationManagementDatabase extends Application<ApplicationConf
                 RedisDatabaseClient client = new RedisDatabaseClient(connectionString);
                 configurationDAO = new RedisConfigurationDAO(client);
                 accountDAO =  new RedisAccountDAO(client);
+                accountValidator = new RedisAccountValidator(client);
             }
             case "MONGO" -> {
                 MongoDatabaseClient client = new MongoDatabaseClient(connectionString);
                 configurationDAO = new MongoConfigurationDAO(client);
                 accountDAO = new MongoAccountDAO(client);
+                accountValidator = new MongoAccountValidator(client);
             }
             default -> throw new RuntimeException("Invalid database type");
         };
@@ -63,7 +69,7 @@ public class ConfigurationManagementDatabase extends Application<ApplicationConf
 
         // security
         environment.jersey().register(new AuthDynamicFeature(new BasicCredentialAuthFilter.Builder<User>()
-                .setAuthenticator(new UserAuthenticator(accountDAO))
+                .setAuthenticator(new UserAuthenticator(accountValidator))
                 .setRealm("BASIC-AUTH-REALM")
                 .buildAuthFilter()
         ));

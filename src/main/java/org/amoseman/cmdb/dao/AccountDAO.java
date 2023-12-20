@@ -26,12 +26,4 @@ public abstract class AccountDAO extends DAO {
      * @param account String The name of the account.
      */
     public abstract void deleteAccount(String account);
-
-    /**
-     * Validate that the provided password is the password of the account of the provided account name.
-     * @param account String The name of the account.
-     * @param password String The password attempt.
-     * @return boolean
-     */
-    public abstract boolean validate(String account, String password);
 }
