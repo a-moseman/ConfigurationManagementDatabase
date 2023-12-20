@@ -3,7 +3,7 @@ package org.amoseman.cmdb.application.authentication;
 import io.dropwizard.auth.AuthenticationException;
 import io.dropwizard.auth.Authenticator;
 import io.dropwizard.auth.basic.BasicCredentials;
-import org.amoseman.cmdb.dao.AccountDatabaseAccess;
+import org.amoseman.cmdb.security.AccountValidator;
 
 import java.util.Optional;
 
@@ -11,14 +11,14 @@ import java.util.Optional;
  * Provides functionality for authenticating users.
  */
 public class UserAuthenticator implements Authenticator<BasicCredentials, User> {
-    private final AccountDatabaseAccess accountDatabaseAccess;
+    private final AccountValidator accountValidator;
 
     /**
      * Instantiate a UserAuthenticator.
-     * @param accountDatabaseAccess AccountDatabaseAccess The database access object for accounts.
+     * @param accountValidator AccountValidator.
      */
-    public UserAuthenticator(AccountDatabaseAccess accountDatabaseAccess) {
-        this.accountDatabaseAccess = accountDatabaseAccess;
+    public UserAuthenticator(AccountValidator accountValidator) {
+        this.accountValidator = accountValidator;
     }
 
     /**
@@ -30,7 +30,7 @@ public class UserAuthenticator implements Authenticator<BasicCredentials, User> 
      */
     @Override
     public Optional<User> authenticate(BasicCredentials credentials) throws AuthenticationException {
-        if (accountDatabaseAccess.validate(credentials.getUsername(), credentials.getPassword())) {
+        if (accountValidator.validate(credentials.getUsername(), credentials.getPassword())) {
             return Optional.of(new User(credentials.getUsername()));
         }
         return Optional.empty();

@@ -6,7 +6,7 @@ import io.dropwizard.auth.Auth;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.amoseman.cmdb.application.authentication.User;
-import org.amoseman.cmdb.dao.AccountDatabaseAccess;
+import org.amoseman.cmdb.dao.AccountDAO;
 
 /**
  * The account resource.
@@ -14,10 +14,10 @@ import org.amoseman.cmdb.dao.AccountDatabaseAccess;
 @Path("/account")
 @Produces(MediaType.APPLICATION_JSON)
 public class AccountResource {
-    private final AccountDatabaseAccess accountDatabaseAccess;
+    private final AccountDAO accountDAO;
 
-    public AccountResource(AccountDatabaseAccess accountDatabaseAccess) {
-        this.accountDatabaseAccess = accountDatabaseAccess;
+    public AccountResource(AccountDAO accountDAO) {
+        this.accountDAO = accountDAO;
     }
 
     /**
@@ -28,7 +28,7 @@ public class AccountResource {
     @POST
     @Timed
     public void addAccount(@QueryParam("account") String account, @QueryParam("password") String password) {
-        accountDatabaseAccess.addAccount(account, password);
+        accountDAO.addAccount(account, password);
     }
 
     /**
@@ -38,6 +38,6 @@ public class AccountResource {
     @DELETE
     @Timed
     public void removeAccount(@Auth User user) {
-        accountDatabaseAccess.deleteAccount(user.getName());
+        accountDAO.deleteAccount(user.getName());
     }
 }

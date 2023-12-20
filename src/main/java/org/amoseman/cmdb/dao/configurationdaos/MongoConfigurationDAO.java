@@ -4,7 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.amoseman.cmdb.application.configuration.ConfigurationValue;
-import org.amoseman.cmdb.dao.ConfigurationDatabaseAccess;
+import org.amoseman.cmdb.dao.ConfigurationDAO;
 import org.amoseman.cmdb.databaseclient.databaseclients.MongoDatabaseClient;
 import org.bson.Document;
 
@@ -15,12 +15,11 @@ import java.util.Optional;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class MongoConfigurationDatabaseAccess extends ConfigurationDatabaseAccess {
+public class MongoConfigurationDAO implements ConfigurationDAO {
     private static final String COLLECTION_PREFIX = "CONFIGURATIONS";
     private final MongoDatabase database;
 
-    public MongoConfigurationDatabaseAccess(MongoDatabaseClient client) {
-        super(client);
+    public MongoConfigurationDAO(MongoDatabaseClient client) {
         this.database = client.getDatabase();
     }
 

@@ -1,7 +1,7 @@
 package org.amoseman.cmdb.dao.configurationdaos;
 
 import org.amoseman.cmdb.application.configuration.ConfigurationValue;
-import org.amoseman.cmdb.dao.ConfigurationDatabaseAccess;
+import org.amoseman.cmdb.dao.ConfigurationDAO;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
@@ -10,11 +10,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public class RedisConfigurationDatabaseAccess extends ConfigurationDatabaseAccess {
+public class RedisConfigurationDAO implements ConfigurationDAO {
     private final RedissonClient database;
 
-    public RedisConfigurationDatabaseAccess(RedisDatabaseClient client) {
-        super(client);
+    public RedisConfigurationDAO(RedisDatabaseClient client) {
         database = client.getDatabase();
     }
 

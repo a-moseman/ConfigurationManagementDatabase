@@ -2,14 +2,14 @@ package org.amoseman.cmdb.dao.accountdaos;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.amoseman.cmdb.dao.AccountDatabaseAccess;
+import org.amoseman.cmdb.dao.AccountDAO;
 import org.amoseman.cmdb.databaseclient.databaseclients.MongoDatabaseClient;
 import org.amoseman.cmdb.security.PasswordHasher;
 import org.bson.Document;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class MongoAccountDatabaseAccess extends AccountDatabaseAccess {
+public class MongoAccountDAO implements AccountDAO {
     private static final String COLLECTION_NAME = "ACCOUNTS";
     private static final String ACCOUNT_KEY = "account";
     private static final String HASH_KEY = "hash";
@@ -19,8 +19,7 @@ public class MongoAccountDatabaseAccess extends AccountDatabaseAccess {
     private final PasswordHasher passwordHasher;
     private final MongoCollection<Document> collection;
 
-    public MongoAccountDatabaseAccess(MongoDatabaseClient client) {
-        super(client);
+    public MongoAccountDAO(MongoDatabaseClient client) {
         this.database = client.getDatabase();
         this.passwordHasher = new PasswordHasher();
         this.collection = database.getCollection(COLLECTION_NAME);
@@ -44,19 +43,5 @@ public class MongoAccountDatabaseAccess extends AccountDatabaseAccess {
     @Override
     public void deleteAccount(String account) {
         collection.findOneAndDelete(eq(ACCOUNT_KEY, account));
-    }
-
-    @Override
-    public boolean validate(String account, String password) {
-        Document document = collection.find(eq(ACCOUNT_KEY, account)).first();
-        if (document == null) {
-            return false;
-        }
-        String hashString = document.getString(HASH_KEY);
-        String saltString = document.getString(SALT_KEY);
-        if (hashString == null || saltString == null) {
-            return false;
-        }
-        return passwordHasher.validate(password, hashString, saltString);
     }
 }
