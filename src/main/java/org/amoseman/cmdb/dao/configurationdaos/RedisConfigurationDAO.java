@@ -10,11 +10,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
-public class RedisConfigurationDAO extends ConfigurationDAO {
+public class RedisConfigurationDAO implements ConfigurationDAO {
     private final RedissonClient database;
 
     public RedisConfigurationDAO(RedisDatabaseClient client) {
-        super(client);
         database = client.getDatabase();
     }
 

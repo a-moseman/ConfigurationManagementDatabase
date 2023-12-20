@@ -6,12 +6,11 @@ import org.amoseman.cmdb.security.PasswordHasher;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 
-public class RedisAccountDAO extends AccountDAO {
+public class RedisAccountDAO implements AccountDAO {
     private final RedissonClient database;
     private final PasswordHasher passwordHasher;
 
     public RedisAccountDAO(RedisDatabaseClient client) {
-        super(client);
         this.database = client.getDatabase();
         this.passwordHasher = new PasswordHasher();
     }

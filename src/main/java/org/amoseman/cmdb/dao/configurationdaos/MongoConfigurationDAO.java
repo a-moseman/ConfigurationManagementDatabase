@@ -15,12 +15,11 @@ import java.util.Optional;
 
 import static com.mongodb.client.model.Filters.eq;
 
-public class MongoConfigurationDAO extends ConfigurationDAO {
+public class MongoConfigurationDAO implements ConfigurationDAO {
     private static final String COLLECTION_PREFIX = "CONFIGURATIONS";
     private final MongoDatabase database;
 
     public MongoConfigurationDAO(MongoDatabaseClient client) {
-        super(client);
         this.database = client.getDatabase();
     }
 
