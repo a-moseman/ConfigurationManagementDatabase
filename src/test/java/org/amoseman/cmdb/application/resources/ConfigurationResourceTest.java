@@ -6,6 +6,7 @@ import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
 import io.dropwizard.testing.junit5.DropwizardExtensionsSupport;
 import io.dropwizard.testing.junit5.ResourceExtension;
 import jakarta.ws.rs.core.HttpHeaders;
+import jakarta.ws.rs.core.Response;
 import org.amoseman.cmdb.application.authentication.User;
 import org.amoseman.cmdb.application.authentication.UserAuthenticator;
 import org.amoseman.cmdb.application.configuration.ConfigurationValue;
@@ -44,6 +45,8 @@ class ConfigurationResourceTest {
 
     @BeforeEach
     void setUp() {
+        when(AV.validate("account", "password")).thenReturn(true);
+
         String time = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
         configurationValue = new ConfigurationValue("test", time, time);
         credential = "Basic " + Base64.getEncoder().encodeToString("account:password".getBytes());
@@ -58,28 +61,65 @@ class ConfigurationResourceTest {
     @Test
     void readSuccess() {
         when(DAO.getValue("account", "test")).thenReturn(Optional.of(configurationValue));
-        when(AV.validate("account", "password")).thenReturn(true);
         ConfigurationValue response = EXT
                 .target("/cmdb")
                 .queryParam("label", "test")
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, credential)
                 .get(ConfigurationValue.class);
-        assertEquals(response.getContent(), configurationValue.getContent());
+        assertEquals(configurationValue.getContent(), response.getContent());
         verify(DAO).getValue("account", "test");
     }
 
     @Test
     void readFail() {
         when(DAO.getValue("account", "test")).thenReturn(Optional.of(configurationValue));
-        when(AV.validate("account", "password")).thenReturn(true);
         ConfigurationValue response = EXT
                 .target("/cmdb")
                 .queryParam("label", "nonesense")
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, credential)
                 .get(ConfigurationValue.class);
-        assertEquals(response.getContent(), "none");
+        assertEquals("none", response.getContent());
         verify(DAO).getValue("account", "nonesense");
+    }
+
+    @Test
+    void create() {
+        when(DAO.addValue("account", "test", "test")).thenReturn(true);
+        Response response = EXT
+                .target("/cmdb")
+                .queryParam("label", "test")
+                .queryParam("value", "test")
+                .request()
+                .header(HttpHeaders.AUTHORIZATION, credential)
+                .get();
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    void update() {
+        when(DAO.setValue("account", "test", "test")).thenReturn(true);
+        Response response = EXT
+                .target("/cmdb")
+                .queryParam("label", "test")
+                .queryParam("value", "test")
+                .request()
+                .header(HttpHeaders.AUTHORIZATION, credential)
+                .get();
+        assertEquals(200, response.getStatus());
+    }
+
+    @Test
+    void delete() {
+        when(DAO.removeValue("account", "test")).thenReturn(true);
+        Response response = EXT
+                .target("/cmdb")
+                .queryParam("label", "test")
+                .queryParam("value", "test")
+                .request()
+                .header(HttpHeaders.AUTHORIZATION, credential)
+                .get();
+        assertEquals(200, response.getStatus());
     }
 }
