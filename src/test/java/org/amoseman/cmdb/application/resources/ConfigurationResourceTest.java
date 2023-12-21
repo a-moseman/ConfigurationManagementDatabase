@@ -68,4 +68,18 @@ class ConfigurationResourceTest {
         assertEquals(response.getContent(), configurationValue.getContent());
         verify(DAO).getValue("account", "test");
     }
+
+    @Test
+    void readFail() {
+        when(DAO.getValue("account", "test")).thenReturn(Optional.of(configurationValue));
+        when(AV.validate("account", "password")).thenReturn(true);
+        ConfigurationValue response = EXT
+                .target("/cmdb")
+                .queryParam("label", "nonesense")
+                .request()
+                .header(HttpHeaders.AUTHORIZATION, credential)
+                .get(ConfigurationValue.class);
+        assertEquals(response.getContent(), "none");
+        verify(DAO).getValue("account", "nonesense");
+    }
 }
