@@ -23,7 +23,7 @@ public interface ConfigurationDAO {
      * @param label String The name of the configuration.
      * @param value String The new value of the configuration.
      */
-    void setValue(String account, String label, String value);
+    boolean setValue(String account, String label, String value);
 
     /**
      * Add a new configuration.
@@ -31,12 +31,12 @@ public interface ConfigurationDAO {
      * @param label String The name of the configuration.
      * @param value String The value of the configuration.
      */
-    void addValue(String account, String label, String value);
+    boolean addValue(String account, String label, String value);
 
     /**
      * Remove a configuration.
      * @param account String The name of the account with the configuration.
      * @param label String The name of the configuration.
      */
-    void removeValue(String account, String label);
+    boolean removeValue(String account, String label);
 }

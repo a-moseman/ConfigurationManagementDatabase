@@ -9,11 +9,11 @@ public interface AccountDAO {
      * @param account String The name of the account.
      * @param password String The password of the account.
      */
-    void addAccount(String account, String password);
+    boolean addAccount(String account, String password);
 
     /**
      * Remove an account.
      * @param account String The name of the account.
      */
-    void deleteAccount(String account);
+    boolean deleteAccount(String account);
 }

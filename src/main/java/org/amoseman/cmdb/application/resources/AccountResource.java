@@ -27,8 +27,8 @@ public class AccountResource {
      */
     @POST
     @Timed
-    public void addAccount(@QueryParam("account") String account, @QueryParam("password") String password) {
-        accountDAO.addAccount(account, password);
+    public boolean addAccount(@QueryParam("account") String account, @QueryParam("password") String password) {
+        return accountDAO.addAccount(account, password);
     }
 
     /**
@@ -37,7 +37,7 @@ public class AccountResource {
      */
     @DELETE
     @Timed
-    public void removeAccount(@Auth User user) {
-        accountDAO.deleteAccount(user.getName());
+    public boolean removeAccount(@Auth User user) {
+        return accountDAO.deleteAccount(user.getName());
     }
 }

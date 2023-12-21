@@ -26,9 +26,9 @@ public class MongoAccountDAO implements AccountDAO {
     }
 
     @Override
-    public void addAccount(String account, String password) {
+    public boolean addAccount(String account, String password) {
         if (collection.find(eq(ACCOUNT_KEY, account)).first() != null) {
-            return;
+            return false;
         }
         byte[] salt = passwordHasher.generateSalt();
         String hash64 = passwordHasher.generate(password, salt);
@@ -38,10 +38,15 @@ public class MongoAccountDAO implements AccountDAO {
                 .append(HASH_KEY, hash64)
                 .append(SALT_KEY, salt64);
         collection.insertOne(hashDocument);
+        return true;
     }
 
     @Override
-    public void deleteAccount(String account) {
+    public boolean deleteAccount(String account) {
+        if (collection.find(eq(ACCOUNT_KEY, account)).first() != null) {
+            return false;
+        }
         collection.findOneAndDelete(eq(ACCOUNT_KEY, account));
+        return true;
     }
 }

@@ -39,8 +39,7 @@ public class ConfigurationResource {
     @PermitAll
     @Timed
     public ConfigurationValue read(@Auth User user, @QueryParam("label") @NotEmpty String label) {
-        ConfigurationValue value = configurationDAO.getValue(user.getName(), label).orElse(defaultValue);
-        return value;
+        return configurationDAO.getValue(user.getName(), label).orElse(defaultValue);
     }
 
     /**
@@ -52,8 +51,8 @@ public class ConfigurationResource {
     @POST
     @PermitAll
     @Timed
-    public void create(@Auth User user, @QueryParam("label") @NotEmpty String label, @QueryParam("value") @NotEmpty String value) {
-        configurationDAO.addValue(user.getName(), label, value);
+    public boolean create(@Auth User user, @QueryParam("label") @NotEmpty String label, @QueryParam("value") @NotEmpty String value) {
+        return configurationDAO.addValue(user.getName(), label, value);
     }
 
     /**
@@ -65,8 +64,8 @@ public class ConfigurationResource {
     @PUT
     @PermitAll
     @Timed
-    public void update(@Auth User user, @QueryParam("label") @NotEmpty String label, @QueryParam("value") @NotEmpty String value) {
-        configurationDAO.setValue(user.getName(), label, value);
+    public boolean update(@Auth User user, @QueryParam("label") @NotEmpty String label, @QueryParam("value") @NotEmpty String value) {
+        return configurationDAO.setValue(user.getName(), label, value);
     }
 
     /**
@@ -77,7 +76,7 @@ public class ConfigurationResource {
     @DELETE
     @PermitAll
     @Timed
-    public void delete(@Auth User user, @QueryParam("label") @NotEmpty String label) {
-        configurationDAO.removeValue(user.getName(), label);
+    public boolean delete(@Auth User user, @QueryParam("label") @NotEmpty String label) {
+        return configurationDAO.removeValue(user.getName(), label);
     }
 }

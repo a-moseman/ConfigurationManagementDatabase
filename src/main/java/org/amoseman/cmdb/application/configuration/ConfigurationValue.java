@@ -6,9 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Represents the contents of a configuration.
  */
 public class ConfigurationValue {
-    private final String content;
-    private final String created;
-    private final String updated;
+    private String content;
+    private String created;
+    private String updated;
 
     /**
      * Instantiate a ConfigurationValue.
@@ -20,6 +20,12 @@ public class ConfigurationValue {
         this.content = content;
         this.created = created;
         this.updated = updated;
+    }
+
+    public ConfigurationValue() {
+        this.content = "none";
+        this.created = "none";
+        this.updated = "none";
     }
 
     @JsonProperty
@@ -35,5 +41,17 @@ public class ConfigurationValue {
     @JsonProperty
     public String getUpdated() {
         return updated;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public void setCreated(String created) {
+        this.created = created;
+    }
+
+    public void setUpdated(String updated) {
+        this.updated = updated;
     }
 }
