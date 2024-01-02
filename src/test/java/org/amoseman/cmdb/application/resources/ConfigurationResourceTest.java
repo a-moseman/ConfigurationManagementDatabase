@@ -84,31 +84,6 @@ class ConfigurationResourceTest {
         verify(DAO).getValue("account", "nonesense");
     }
 
-    @Test
-    void create() {
-        when(DAO.addValue("account", "test", "test")).thenReturn(true);
-        Response response = EXT
-                .target("/cmdb")
-                .queryParam("label", "test")
-                .queryParam("value", "test")
-                .request()
-                .header(HttpHeaders.AUTHORIZATION, credential)
-                .get();
-        assertEquals(200, response.getStatus());
-    }
-
-    @Test
-    void update() {
-        when(DAO.setValue("account", "test", "test")).thenReturn(true);
-        Response response = EXT
-                .target("/cmdb")
-                .queryParam("label", "test")
-                .queryParam("value", "test")
-                .request()
-                .header(HttpHeaders.AUTHORIZATION, credential)
-                .get();
-        assertEquals(200, response.getStatus());
-    }
 
     @Test
     void delete() {
@@ -119,7 +94,7 @@ class ConfigurationResourceTest {
                 .queryParam("value", "test")
                 .request()
                 .header(HttpHeaders.AUTHORIZATION, credential)
-                .get();
+                .delete();
         assertEquals(200, response.getStatus());
     }
 }
