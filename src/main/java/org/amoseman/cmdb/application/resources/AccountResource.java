@@ -1,6 +1,8 @@
 package org.amoseman.cmdb.application.resources;
 
 
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
 import jakarta.ws.rs.*;
@@ -15,9 +17,14 @@ import org.amoseman.cmdb.dao.AccountDAO;
 @Produces(MediaType.APPLICATION_JSON)
 public class AccountResource {
     private final AccountDAO accountDAO;
+    private final Meter addAccountMeter;
+    private final Meter removeAccountMeter;
 
-    public AccountResource(AccountDAO accountDAO) {
+    public AccountResource(AccountDAO accountDAO, MetricRegistry metrics) {
         this.accountDAO = accountDAO;
+        this.addAccountMeter = metrics.meter("add-account");
+        this.removeAccountMeter = metrics.meter("remove-account");
+
     }
 
     /**
@@ -28,6 +35,7 @@ public class AccountResource {
     @POST
     @Timed
     public boolean addAccount(@QueryParam("account") String account, @QueryParam("password") String password) {
+        addAccountMeter.mark();
         return accountDAO.addAccount(account, password);
     }
 
@@ -38,6 +46,7 @@ public class AccountResource {
     @DELETE
     @Timed
     public boolean removeAccount(@Auth User user) {
+        removeAccountMeter.mark();
         return accountDAO.deleteAccount(user.getName());
     }
 }

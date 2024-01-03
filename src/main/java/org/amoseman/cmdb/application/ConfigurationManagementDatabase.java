@@ -1,5 +1,8 @@
 package org.amoseman.cmdb.application;
 
+import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
@@ -22,6 +25,8 @@ import org.amoseman.cmdb.dao.configurationdaos.MongoConfigurationDAO;
 import org.amoseman.cmdb.dao.configurationdaos.RedisConfigurationDAO;
 import org.amoseman.cmdb.databaseclient.databaseclients.MongoDatabaseClient;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * The configuration management database (CMDB) application.
@@ -60,11 +65,17 @@ public class ConfigurationManagementDatabase extends Application<ApplicationConf
             default -> throw new RuntimeException("Invalid database type");
         };
 
+        MetricRegistry metrics = new MetricRegistry();
+        ConsoleReporter reporter = ConsoleReporter.forRegistry(metrics)
+                .convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS)
+                .build();
+        reporter.start(60, TimeUnit.SECONDS);
 
-        ConfigurationResource configurationResource = new ConfigurationResource(configurationDAO, configuration.getDefaultValue());
+        ConfigurationResource configurationResource = new ConfigurationResource(configurationDAO, configuration.getDefaultValue(), metrics);
         environment.jersey().register(configurationResource);
 
-        AccountResource accountResource = new AccountResource(accountDAO);
+        AccountResource accountResource = new AccountResource(accountDAO, metrics);
         environment.jersey().register(accountResource);
 
         // security

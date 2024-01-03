@@ -1,5 +1,7 @@
 package org.amoseman.cmdb.application.resources;
 
+import com.codahale.metrics.Meter;
+import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
 import jakarta.annotation.security.PermitAll;
@@ -18,15 +20,23 @@ import org.amoseman.cmdb.dao.ConfigurationDAO;
 public class ConfigurationResource {
     private final ConfigurationDAO configurationDAO;
     private final ConfigurationValue defaultValue;
+    private final Meter readConfigurationMeter;
+    private final Meter createConfigurationMeter;
+    private final Meter updateConfigurationMeter;
+    private final Meter deleteConfigurationMeter;
 
     /**
      * Instantiate a ConfigurationResource.
      * @param configurationDAO ConfigurationDatabaseAccess The database access object for configurations.
      * @param defaultValue String The default return value for configuration values.
      */
-    public ConfigurationResource(ConfigurationDAO configurationDAO, String defaultValue) {
+    public ConfigurationResource(ConfigurationDAO configurationDAO, String defaultValue, MetricRegistry metrics) {
         this.configurationDAO = configurationDAO;
         this.defaultValue = new ConfigurationValue(defaultValue, defaultValue, defaultValue);
+        this.readConfigurationMeter = metrics.meter("read-configuration");
+        this.createConfigurationMeter = metrics.meter("create-configuration");
+        this.updateConfigurationMeter = metrics.meter("update-configuration");
+        this.deleteConfigurationMeter = metrics.meter("delete-configuration");
     }
 
     /**
