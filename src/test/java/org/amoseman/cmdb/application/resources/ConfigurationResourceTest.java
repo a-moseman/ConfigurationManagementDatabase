@@ -46,7 +46,6 @@ class ConfigurationResourceTest {
             .build();
     private ConfigurationValue configurationValue;
     private String credential;
-    private ObjectMapper mapper;
 
     @BeforeEach
     void setUp() {
@@ -55,7 +54,6 @@ class ConfigurationResourceTest {
         String time = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME);
         configurationValue = new ConfigurationValue("test", "test", time, time);
         credential = "Basic " + Base64.getEncoder().encodeToString("account:password".getBytes());
-        mapper = new ObjectMapper();
     }
 
     @AfterEach

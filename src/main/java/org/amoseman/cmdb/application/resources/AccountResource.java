@@ -5,10 +5,15 @@ import com.codahale.metrics.Meter;
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.amoseman.cmdb.application.authentication.User;
+import org.amoseman.cmdb.application.pojo.Account;
 import org.amoseman.cmdb.dao.AccountDAO;
+
+import javax.print.attribute.standard.Media;
 
 /**
  * The account resource.
@@ -33,10 +38,14 @@ public class AccountResource {
      * @param password String The account's password.
      */
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Timed
-    public boolean addAccount(@QueryParam("account") String account, @QueryParam("password") String password) {
+    public Response addAccount(@NotNull Account account) {
         addAccountMeter.mark();
-        return accountDAO.addAccount(account, password);
+        if (accountDAO.addAccount(account.getName(), account.getPass())) {
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
     /**
@@ -45,8 +54,11 @@ public class AccountResource {
      */
     @DELETE
     @Timed
-    public boolean removeAccount(@Auth User user) {
+    public Response removeAccount(@Auth User user) {
         removeAccountMeter.mark();
-        return accountDAO.deleteAccount(user.getName());
+        if (accountDAO.deleteAccount(user.getName())) {
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 }
