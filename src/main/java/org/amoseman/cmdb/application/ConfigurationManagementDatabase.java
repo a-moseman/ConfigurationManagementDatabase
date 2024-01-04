@@ -72,7 +72,7 @@ public class ConfigurationManagementDatabase extends Application<ApplicationConf
                 .build();
         reporter.start(60, TimeUnit.SECONDS);
 
-        ConfigurationResource configurationResource = new ConfigurationResource(configurationDAO, configuration.getDefaultValue(), metrics);
+        ConfigurationResource configurationResource = new ConfigurationResource(configurationDAO, metrics);
         environment.jersey().register(configurationResource);
 
         AccountResource accountResource = new AccountResource(accountDAO, metrics);

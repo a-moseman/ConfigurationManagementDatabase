@@ -1,6 +1,7 @@
 package org.amoseman.cmdb.dao.configurationdaos;
 
-import org.amoseman.cmdb.application.configuration.ConfigurationValue;
+import org.amoseman.cmdb.application.pojo.ConfigurationValue;
+import org.amoseman.cmdb.application.pojo.LabelValuePair;
 import org.amoseman.cmdb.dao.ConfigurationDAO;
 import org.amoseman.cmdb.databaseclient.databaseclients.RedisDatabaseClient;
 import org.redisson.api.RMap;
@@ -28,7 +29,7 @@ public class RedisConfigurationDAO implements ConfigurationDAO {
         String value = configurations.get(label);
         String created = createds.get(label);
         String updated = updateds.get(label);
-        return Optional.of(new ConfigurationValue(value, created, updated));
+        return Optional.of(new ConfigurationValue(label, value, created, updated));
     }
 
     @Override

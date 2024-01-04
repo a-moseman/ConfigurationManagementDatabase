@@ -3,7 +3,8 @@ package org.amoseman.cmdb.dao.configurationdaos;
 import com.mongodb.BasicDBObject;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import org.amoseman.cmdb.application.configuration.ConfigurationValue;
+import org.amoseman.cmdb.application.pojo.ConfigurationValue;
+import org.amoseman.cmdb.application.pojo.LabelValuePair;
 import org.amoseman.cmdb.dao.ConfigurationDAO;
 import org.amoseman.cmdb.databaseclient.databaseclients.MongoDatabaseClient;
 import org.bson.Document;
@@ -11,8 +12,6 @@ import org.bson.Document;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.Optional;
 
 import static com.mongodb.client.model.Filters.eq;
@@ -35,7 +34,7 @@ public class MongoConfigurationDAO implements ConfigurationDAO {
         String value = document.getString("value");
         String created = document.getString("created");
         String updated = document.getString("updated");
-        return Optional.of(new ConfigurationValue(value, created, updated));
+        return Optional.of(new ConfigurationValue(label, value, created, updated));
     }
 
     @Override

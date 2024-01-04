@@ -6,11 +6,16 @@ import com.codahale.metrics.annotation.Timed;
 import io.dropwizard.auth.Auth;
 import jakarta.annotation.security.PermitAll;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 import org.amoseman.cmdb.application.authentication.User;
-import org.amoseman.cmdb.application.configuration.ConfigurationValue;
+import org.amoseman.cmdb.application.pojo.ConfigurationValue;
+import org.amoseman.cmdb.application.pojo.LabelValuePair;
 import org.amoseman.cmdb.dao.ConfigurationDAO;
+
+import java.util.Optional;
 
 /**
  * The configuration resource.
@@ -19,7 +24,6 @@ import org.amoseman.cmdb.dao.ConfigurationDAO;
 @Produces(MediaType.APPLICATION_JSON)
 public class ConfigurationResource {
     private final ConfigurationDAO configurationDAO;
-    private final ConfigurationValue defaultValue;
     private final Meter readConfigurationMeter;
     private final Meter createConfigurationMeter;
     private final Meter updateConfigurationMeter;
@@ -28,11 +32,9 @@ public class ConfigurationResource {
     /**
      * Instantiate a ConfigurationResource.
      * @param configurationDAO ConfigurationDatabaseAccess The database access object for configurations.
-     * @param defaultValue String The default return value for configuration values.
      */
-    public ConfigurationResource(ConfigurationDAO configurationDAO, String defaultValue, MetricRegistry metrics) {
+    public ConfigurationResource(ConfigurationDAO configurationDAO, MetricRegistry metrics) {
         this.configurationDAO = configurationDAO;
-        this.defaultValue = new ConfigurationValue(defaultValue, defaultValue, defaultValue);
         this.readConfigurationMeter = metrics.meter("read-configuration");
         this.createConfigurationMeter = metrics.meter("create-configuration");
         this.updateConfigurationMeter = metrics.meter("update-configuration");
@@ -48,45 +50,43 @@ public class ConfigurationResource {
     @GET
     @PermitAll
     @Timed
-    public ConfigurationValue read(@Auth User user, @QueryParam("label") @NotEmpty String label) {
-        return configurationDAO.getValue(user.getName(), label).orElse(defaultValue);
+    public Response read(@Auth User user, @QueryParam("label") @NotEmpty String label) {
+        Optional<ConfigurationValue> maybe = configurationDAO.getValue(user.getName(), label);
+        if (maybe.isPresent()) {
+            return Response.ok(maybe.get()).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    /**
-     * The POST request to add a new configuration.
-     * @param user User The authenticated user.
-     * @param label String The name of the configuration.
-     * @param value String The value of the configuration.
-     */
     @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @PermitAll
     @Timed
-    public boolean create(@Auth User user, @QueryParam("label") @NotEmpty String label, @QueryParam("value") @NotEmpty String value) {
-        return configurationDAO.addValue(user.getName(), label, value);
+    public Response create(@Auth User user, @NotNull LabelValuePair labelValuePair) {
+        if (configurationDAO.addValue(user.getName(), labelValuePair.getLabel(), labelValuePair.getValue())) {
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
-    /**
-     * The PUT request to update the value of an existing configuration.
-     * @param user User The authenticated user.
-     * @param label String The name of the configuration.
-     * @param value String The new value of the configuration.
-     */
     @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
     @PermitAll
     @Timed
-    public boolean update(@Auth User user, @QueryParam("label") @NotEmpty String label, @QueryParam("value") @NotEmpty String value) {
-        return configurationDAO.setValue(user.getName(), label, value);
+    public Response update(@Auth User user, @NotNull LabelValuePair labelValuePair) {
+        if (configurationDAO.setValue(user.getName(), labelValuePair.getLabel(), labelValuePair.getValue())) {
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 
-    /**
-     * The DELETE request to remove a configuration.
-     * @param user User The authenticated user.
-     * @param label String The name of the configuration.
-     */
     @DELETE
     @PermitAll
     @Timed
-    public boolean delete(@Auth User user, @QueryParam("label") @NotEmpty String label) {
-        return configurationDAO.removeValue(user.getName(), label);
+    public Response delete(@Auth User user, @QueryParam("label") @NotEmpty String label) {
+        if (configurationDAO.removeValue(user.getName(), label)) {
+            return Response.ok().build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 }
