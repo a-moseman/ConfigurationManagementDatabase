@@ -1,5 +1,6 @@
 package org.amoseman.cmdb.application.resources;
 
+import com.codahale.metrics.MetricRegistry;
 import io.dropwizard.auth.AuthDynamicFeature;
 import io.dropwizard.auth.AuthValueFactoryProvider;
 import io.dropwizard.auth.basic.BasicCredentialAuthFilter;
@@ -38,7 +39,7 @@ class ConfigurationResourceTest {
                     .buildAuthFilter()
             ))
             .addProvider(new AuthValueFactoryProvider.Binder<>(User.class))
-            .addResource(new ConfigurationResource(DAO, "none"))
+            .addResource(new ConfigurationResource(DAO, "none", new MetricRegistry()))
             .build();
     private ConfigurationValue configurationValue;
     private String credential;
